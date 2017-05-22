@@ -17,38 +17,21 @@ and open the template in the editor.
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body>
+    <body style="background-color:#FAFAFA;">
         <header>
-                <ul id='orderDropDown' class='dropdown-content'>
-                            <li><a href="#!">one</a></li>
-                            <li><a href="#!">two</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#!">three</a></li>
-                            <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
-                            <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
-                </ul>
-                <ul id='orderDropDown2' style="margin-top: 68px;"class='dropdown-content'>
-                            <li><a href="#!">one</a></li>
-                            <li><a href="#!">two</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#!">three</a></li>
-                            <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
-                            <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
-                </ul>
-            
-                  <nav>
+                <nav>
                     <div class="nav-wrapper">
-                        <a href="#!" class="brand-logo">Logo</a>
+                        <a href="./home.html" class="brand-logo">Logo</a>
                         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
-                            <li><a href="sass.html">My Account</a></li>
-                            <li><a class="dropdown-button" href="#" data-activates='orderDropDown2'>My Orders</a></li>
+                            <li><a href="./account.html">My Account</a></li>
+                            <li ><a href="./orders.html">My Orders</a></li>
                             <li><a class="signout">Sign out</a></li>
                         </ul>
                         <!--Mobile Nav list-->
                         <ul class="side-nav" id="mobile-demo">
-                            <li><a href="#">My Account</a></li>
-                            <li><a class="dropdown-button" href="#" data-activates='orderDropDown'>My Orders</a></li>
+                            <li><a href="./account.html">My Account</a></li>
+                            <li><a class="dropdown-button" href="#" data-activates='orderDropDownM'>My Orders</a></li>
                             <li><a class="signout">Sign out</a></li>
                         </ul>
                     </div>
@@ -56,16 +39,60 @@ and open the template in the editor.
          
         </header>
         <main>
-            
+            <div class="container " style="margin-top: 1%;">
+              <div class="row ">
+                <div class="col s12 ">
+                    <ul class="tabs tabs-fixed-width">
+                        <li class="tab col s3"><a class="active" href="#rent">Rent a car</a></li>
+                        <li class="tab col s3"><a href="#pool">Car-pool</a></li>
+                    </ul>
+                </div>
+                <div id="rent" class="col s12">  
+                    <div class="row">  
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn col s12' style="margin-top: 1%" href='#' data-activates='RentCarTypeDropDown'><i class="material-icons left">search</i> Search by Car</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='RentCarTypeDropDown' class='dropdown-content'>
+                            <li><a id='carAll'>All</a></li>
+                            <li><a id='carH'>Hatchback</a></li>
+                            <li><a id='carS'>Sedan</a></li>
+                            <li><a id='carMPV'>MPV</a></li>
+                            <li><a id='carSUV'>SUV</a></li>
+                            <li><a id='carCross'>Crossover</a></li>
+                            <li><a id='carCoupe'>Coupe</a></li>
+                            <li><a id='carConvert'>Convertible</a></li>
+                        </ul>
+                    </div>
+                    <div id='rentWindow'></div>
+
+                </div>
+                  <div id="pool" class="col s12">
+                    <div class="row">  
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn col s12' style="margin-top: 1%" href='#' data-activates='CarpoolTypeDropDown'><i class="material-icons left">search</i> Search by Route</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='CarpoolTypeDropDown' class='dropdown-content'>
+                            <li><a >Borivali</a></li>
+                            <li><a >Kandivali</a></li>
+                        </ul>
+                    </div>
+                    <div id='poolWindow'></div>
+                    
+                                                          
+                  </div>
+              </div>
+            </div>
         </main>
         <footer>
             
         </footer>
-        
-    <!-- Compiled and minified JavaScript Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
-    
-    <script type="text/javascript" src="js/home.js"></script>
+
+        <!-- Compiled and minified JavaScript Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+
+        <script type="text/javascript" src="js/home.js"></script>
     </body>
 </html>
