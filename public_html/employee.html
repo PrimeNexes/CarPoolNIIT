@@ -41,11 +41,11 @@ and open the template in the editor.
             <div class="row">
                 <div class="col s12 l12">
                     <ul class="tabs tabs-fixed-width">
-                        <li class="tab col s3"><a class="active" href="#test1">Rent</a></li>
-                        <li class="tab col s3"><a href="#test2">Booking</a></li>
-                        <li class="tab col s3"><a href="#test3">Carpool</a></li>
+                        <li class="tab col s3"><a class="active" href="#Car">Car</a></li>
+                        <li class="tab col s3"><a href="#Rent">Rent Service</a></li>
+                        <li class="tab col s3"><a href="#Carpool">Carpool Service</a></li>                     
                 </div>
-                <div id="test1" class="col s12 l12 ">                  
+                <div id="Car" class="col s12 l12 ">                  
                     <div class="card-panel">
                         <div class="row"><div class="col s12"><h5>Add Car</h5></div></div>
                         <div class="row">
@@ -87,16 +87,50 @@ and open the template in the editor.
                     </div>
                         
                 </div>
-                <div id="test2" class="col s12">
-                    <div class="col s12 m4 l4">
-                    <div class="card-panel teal">
-                    <span class="white-text">I am a very simple card. I am good at containing small bits of information.
-                    I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.
-                    </span>
-                    </div>
+                <div id="Rent" class="col s12">
+                        <div class="card-panel">
+                        <div class="row"><div class="col s12"><h5>Add Service</h5></div></div>
+                        <div class="row">
+                            <form class="col s12" id="rentServiceForm">
+                                <div class="row">
+                                <div class="input-field col s12">
+                                    <select>
+                                    <option id="orderIdVal" value="" disabled selected>Choose your option</option>
+                                    </select>
+                                    <label>Select Order ID</label>
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="input-field col s12">
+                                    <select required>
+                                    <option id="orderIdVal" value="" disabled selected>Choose your option</option>
+                                    </select>
+                                    <label>Select Car</label>
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="fare" type="number" class="validate" required>
+                                    <label for="fare">Enter Fare</label>
+                                </div>
+                                </div>
+                                <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="dateOfBooking"type="date" class="datepicker" required>
+                                    <label for="dateOfBooking">Enter date of booking</label>
+                                </div>
+                                </div>
+                                <div class="row">
+                                    <button class="btn waves-effect waves-light blue darken-3 col s4 offset-s8 l4 offset-l8" type="submit">Confirm Booking</button>
+                                 </div>
+                             </form>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row"><div class="col s12"><h5>Modify Service</h5></div></div>
+                        <div id='getRentService'></div>
                     </div>
                 </div>
-                <div id="test3" class="col s12">
+                <div id="Carpool" class="col s12">
                     <div class="col s12 m4 l4">
                     <div class="card-panel teal">
                     <span class="white-text">I am a very simple card. I am good at containing small bits of information.

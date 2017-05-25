@@ -1,15 +1,15 @@
-function setRentCar(carName, carType, noOfSeats) {
-  var carId=firebase.database().ref('Rent/Car/').push().key;
-  firebase.database().ref('Rent/Car/' + carId).set({
-    carName:carName,
+function setCar(carName, carType, noOfSeats) {
+  var carId=firebase.database().ref('Car/').push().key;
+  firebase.database().ref('Car/' + carId).set({
+    carName: carName,
     carType: carType,
-    noOfSeats: noOfSeats
+    noOfSeats: noOfSeats,
+    isAvailable:true
   });
 }
-
-function getCarData(){
+function getCar(){
     
- firebase.database().ref('Rent/Car/').on('child_added',function(snapshot){
+ firebase.database().ref('Car/').on('child_added',function(snapshot){
   var carId=snapshot.val();
   $("#getCarToDelete").append(
             '<div class="row" id="'+snapshot.key+'">'+
@@ -30,7 +30,7 @@ function getCarData(){
   
   $("#"+snapshot.key+"Delete").click(function(){
       try{
-        firebase.database().ref('Rent/Car/'+snapshot.key).remove();
+        firebase.database().ref('Car/'+snapshot.key).remove();
         $("#"+snapshot.key).remove();
         }
         catch(e){
@@ -42,8 +42,11 @@ function getCarData(){
   });    
 };
 
+
 $(document).ready(function(){
-getCarData();
+    
+getCar();
+
 $("#carForm").submit(function(event){
 event.preventDefault();
 var carName = document.getElementById('carname').value;   
@@ -52,7 +55,7 @@ var noOfSeats = document.getElementById('noOfSeats').value;
 try { 
     if(carName && carType&& noOfSeats)
     {
-    setRentCar(carName, carType, noOfSeats);
+    setCar(carName, carType, noOfSeats);
     }
 else{
     Materialize.toast("Enter all fields", 4000);
@@ -69,4 +72,9 @@ finally{
 
 //Init or Update select
 $('select').material_select();});
+
+ $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
 

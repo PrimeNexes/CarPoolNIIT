@@ -18,99 +18,28 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body style="background-color:#FAFAFA;">
-<header>
-                <ul class="collection dropdown-content" id='orderDropDownM' style="margin-top: 48px;">
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle">folder</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle">folder</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                             </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle green">insert_chart</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle red">play_arrow</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                </ul>
-                <ul class="collection dropdown-content" id='orderDropDown' style="margin-top: 52px;margin-left: 14px;">
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle">folder</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle">folder</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                             </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle green">insert_chart</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                    Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle red">play_arrow</i>
-                                <span class="title">Title</span>
-                                <p>First Line <br>
-                                Second Line
-                                </p>
-                                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-                            </li>
-                </ul>
-
-           
-                  <nav>
+        <header>
+                <nav>
                     <div class="nav-wrapper">
                         <a href="./home.html" class="brand-logo">Logo</a>
                         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                         <ul class="right hide-on-med-and-down">
                             <li><a href="./account.html">My Account</a></li>
-                            <li ><a class="dropdown-button btn" href="#" data-activates='orderDropDown' style="width: 500px;">My Orders</a></li>
+                            <li><a href="./orders.html">My Orders</a></li>
                             <li><a class="signout">Sign out</a></li>
                         </ul>
                         <!--Mobile Nav list-->
                         <ul class="side-nav" id="mobile-demo">
                             <li><a href="./account.html">My Account</a></li>
-                            <li><a class="dropdown-button" href="#" data-activates='orderDropDownM'>My Orders</a></li>
+                            <li><a href="./orders.html">My Orders</a></li>
                             <li><a class="signout">Sign out</a></li>
                         </ul>
                     </div>
-                  </nav>
-         
-        </header>   
+                  </nav>       
+        </header> 
         <main>
           <div class="container">
-            <div class="card-panel"  style="margin-top:10%">
+            <div class="card-panel"  style="margin-top:5%">
             <div class="section">
                 <h5>Your Profile</h5>
                 <div class="row">
@@ -129,7 +58,7 @@ and open the template in the editor.
                             <div class="settings-label settings-label-text">Email :</div>
                         </div>
                         <div class="col s12 m6">
-                            <div id="profileEmail" class="settings-label-readonly-value profile-viewing-email grey-text">shubhamrasal12@gmail.com</div>
+                            <div id="profileEmail" class="settings-label-readonly-value profile-viewing-email grey-text">Your mail</div>
 
                         </div>
                     </div>
@@ -140,11 +69,15 @@ and open the template in the editor.
                             <div class="settings-label settings-label-text">Address :</div>
                         </div>                  
                         <div class="input-field col s12 m6">
-                            <textarea id="textarea1" class="materialize-textarea"></textarea>
-                            <label for="textarea1">Textarea</label>                         
+                            <textarea id="profileAddress" class="materialize-textarea"></textarea>                     
                         </div>
                     
                         </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6">
+                            <button id="profileUpdateBtn" href="#update-profile-modal" class="btn blue  darken-3 modal-trigger">Update Profile</button>
+                    </div>
                 </div>
                 </div>
                     <div class="divider"></div>
@@ -156,11 +89,19 @@ and open the template in the editor.
                             <p> This will delete your entire profile </p>
                         </div>
                             <div class="col s12 m6">
-                                <form>
-                                    <button href="#delete-profile-modal" class="btn materialize-red darken-1 modal-trigger">Delete Profile</button>
-                                </form>
+                                    <button id="profileDeleteBtn" data-target="delete-profile-modal" class="btn materialize-red darken-1 modal-trigger">Delete Profile</button>
                             </div>
+                    </div>
+                    <div id="delete-profile-modal" class="modal">
+                        <div class="modal-content">
+                        <h4>Delete Profile</h4>
+                        <p>Are you sure ?</p>
                         </div>
+                        <div class="modal-footer">
+                        <a id="profileDeleteAgree" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+                        
+                        </div>
+                    </div>
                 </div>
                              
                 

@@ -1,7 +1,5 @@
-$(document).ready(function(){
-    
 //Check current user
-var userState = function (){
+function userState(){
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
       window.location.href ="./home.html";
@@ -13,10 +11,10 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 };
 
-//Check current user on ready
-userState();   
-//
-
+$(document).ready(function(){
+ 
+  userState();  
+    
 $("#loginform").submit(function(event){
 event.preventDefault();
 var email = document.getElementById('emailL').value;   
@@ -28,17 +26,38 @@ firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error
   Materialize.toast(errorMessage, 4000);
   
 });
+userState();  
 }); 
        
 $("#signupform").submit(function(){
  event.preventDefault();
 var email = document.getElementById('emailR').value;   
-var password =   document.getElementById('passwordR').value; 
+var password =   document.getElementById('passwordR').value;
+var fullnameR =   document.getElementById('fullnameR').value; 
+var addressR =   document.getElementById('addressR').value; 
+try{
 firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
   // Handle Errors here.
  Materialize.toast(error.message, 4000);
   // ...
 });
+
+var userId = firebase.auth().currentUser.uid;
+firebase.database().ref('/Users/' + userId).set({
+    
+fullname:fullnameR,
+address:addressR
+
+});
+userState(); 
+}
+catch(e){
+    console.log(e);
+}
+finally{
+    Materialize.toast("Done ! Now you will be logged in.", 4000);
+    
+}
 });
 
 $("#fogotPassBtn").click(function(){
