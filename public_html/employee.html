@@ -39,11 +39,14 @@ and open the template in the editor.
         <main>
             <div class="container " style="margin-top: 1%;">
             <div class="row">
+                
+                
                 <div class="col s12 l12">
                     <ul class="tabs tabs-fixed-width">
                         <li class="tab col s3"><a class="active" href="#Car">Car</a></li>
                         <li class="tab col s3"><a href="#Rent">Rent Service</a></li>
-                        <li class="tab col s3"><a href="#Carpool">Carpool Service</a></li>                     
+                        <li class="tab col s3"><a href="#Carpool">Carpool Service</a></li>
+                        <li class="tab col s3"><a href="#Booking">Cancel Booking</a></li>
                 </div>
                 <div id="Car" class="col s12 l12 ">                  
                     <div class="card-panel">
@@ -87,19 +90,12 @@ and open the template in the editor.
                     </div>
                         
                 </div>
+                
                 <div id="Rent" class="col s12">
                         <div class="card-panel">
                         <div class="row"><div class="col s12"><h5>Add Service</h5></div></div>
                         <div class="row">
                             <form class="col s12" id="rentServiceForm">
-                                <div class="row">
-                                <div class="input-field col s12">
-                                    <select>
-                                    <option id="orderIdVal" value="" disabled selected>Choose your option</option>
-                                    </select>
-                                    <label>Select Order ID</label>
-                                </div>
-                                </div>
                                 <div class="row">
                                 <div class="input-field col s12">
                                     <select required>
@@ -110,14 +106,8 @@ and open the template in the editor.
                                 </div>
                                 <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="fare" type="number" class="validate" required>
-                                    <label for="fare">Enter Fare</label>
-                                </div>
-                                </div>
-                                <div class="row">
-                                <div class="input-field col s12">
-                                    <input id="dateOfBooking"type="date" class="datepicker" required>
-                                    <label for="dateOfBooking">Enter date of booking</label>
+                                    <input id="fareRental" type="number" class="validate" required>
+                                    <label for="fareRental">Enter Fare</label>
                                 </div>
                                 </div>
                                 <div class="row">
@@ -130,16 +120,63 @@ and open the template in the editor.
                         <div id='getRentService'></div>
                     </div>
                 </div>
+                
                 <div id="Carpool" class="col s12">
-                    <div class="col s12 m4 l4">
-                    <div class="card-panel teal">
-                    <span class="white-text">I am a very simple card. I am good at containing small bits of information.
-                    I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.
-                    </span>
-                    </div>
+                <div class="card-panel">
+                    <div class="row"><div class="col s12"><h5>Add Service</h5></div></div>
+                    <form id="carpoolForm">
+                        <div class="row">
+                            <div class="input-field col s8">
+                                <input id="routeName" type="text" class="validate" required>
+                                <label for="routeName">Route name</label>
+                            </div>
+                            <div class="input-field col s4">
+                                <input id="routeDistance" type="number" class="validate" required>
+                                <label for="routeDistance">Distance</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input id="startLocation" type="text" class="validate" required>
+                                <label for="startlocation">Start location</label>
+                            </div>
+                            <div class="input-field col s6">
+                                
+                                <input id="endLocation" type="text" class="validate" required>
+                                <label for="endLocation">End location</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input id="startDate" type="date" class="datepicker" required>
+                                <label for="startDate">Start date</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input id="endDate" type="date" class="datepicker" required>
+                                <label for="endDate">End date</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <i class="material-icons prefix">payment</i>
+                                <input id="fareCarPool" type="number" class="validate" required>
+                                <label for="fareCarPool">Fare</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <i class="material-icons prefix">supervisor_account</i>
+                                <input id="noOfPassengers" type="number" class="validate" required>
+                                <label for="noOfPassengers">No of passengers</label>
+                            </div>
+                            <button class="btn waves-effect waves-light blue darken-3 right" type="submit" name="carpoolsubmit">
+                                Add Service
+                            </button>
+                        </div>
+                    </form>
+                        <div class="divider"></div>
+                        <div class="row"><div class="col s12"><h5>Modify Service</h5></div></div>
+                        <div id='getCarpoolToDelete'></div>
                     </div>
                 </div>
-
+                
+                <div id="Booking" class="col s12">
+                    
+                </div>
+                
+                
             </div>
 
             </div>
