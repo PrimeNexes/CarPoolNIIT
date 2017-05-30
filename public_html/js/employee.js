@@ -8,9 +8,10 @@ function setCar(carName, carType, noOfSeats) {
   });
 }
 function getCar(){
-    
+    $("#getCarToDelete").html("");   
  firebase.database().ref('Car/').on('child_added',function(snapshot){
   var carId=snapshot.val();
+  if(carId.isAvailable === true && $('#'+snapshot.key).length === 0){
   $("#getCarToDelete").append(
             '<div class="row" id="'+snapshot.key+'">'+
                         '<div class="col s12 m12 l12">'+
@@ -32,19 +33,32 @@ function getCar(){
       try{
         firebase.database().ref('Car/'+snapshot.key).remove();
         $("#"+snapshot.key).remove();
+        getAll();
         }
         catch(e){
         Materialize.toast("Error !", 4000);
         Materialize.toast(e, 4000);
         }
   });
+
   
+  
+  
+  
+  $("#carIdSelect").append('<option id="carIdVal" value="'+snapshot.key+'">'+carId.carName+'</option>');
+  $('select').material_select();
+  $("#carsSelect").append('<option class="carsVal" value="'+snapshot.key+'C">'+carId.carName+'</option>');
+  $('select').material_select();
+  $("#AddCarCarPoolDropDown").append('<option class="carAddVal" value="'+snapshot.key+'C">'+carId.carName+'</option>');
+  $('select').material_select();
+  
+  }
   });    
 };
 
-function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers){
-    var carpoolId=firebase.database().ref('Carpool/').push().key;
-    firebase.database().ref('Carpool/'+carpoolId).set({
+function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,noOfCars){
+    var carpoolId=firebase.database().ref('CarpoolService/').push().key;
+    firebase.database().ref('CarpoolService/'+carpoolId).set({
         routeName:routeName,
         routeDistance:routeDistance,
         startLocation:startLocation,
@@ -53,14 +67,20 @@ function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,
         endDate:endDate,
         fare:fare,
         noOfPassengers:noOfPassengers,
-        isCanceled:false
+        cars:cars,
+        noOfCars:noOfCars,
+        isAvailable:true
     });
+    cars.forEach(function(carId){    
+      firebase.database().ref('Car/'+carId+'/isAvailable').set(false);     
+  });
 };
-
 function getCarpoolData(){
-    
- firebase.database().ref('Carpool/').on('child_added',function(snapshot){
-  var carpoolId=snapshot.val();
+ $("#getCarpoolToDelete").html("");
+ firebase.database().ref('CarpoolService/').on('child_added',function(snapshot){
+   var car=snapshot.val().cars;
+    var carpoolId=snapshot.val();
+  if(carpoolId.isAvailable === true && $('#'+snapshot.key).length === 0){
   $("#getCarpoolToDelete").append(
             '<div class="row" id="'+snapshot.key+'">'+
                         '<div class="col s12 m12 l12">'+
@@ -73,33 +93,219 @@ function getCarpoolData(){
                             'Start Date      :'+carpoolId.startDate+'<br/>'+
                             'End Date        :'+carpoolId.endDate+'<br/>'+
                             'Fare            :'+carpoolId.fare+'<br/>'+
-                            'No of Passengers :'+carpoolId.noOfPassengers+'</p>'+
+                            'No of Passengers :'+carpoolId.noOfPassengers+'<br/>'+
+                            'No of cars:'+carpoolId.noOfCars+
+                               '<table>'+
+                                '<thead>'+
+                                '<tr>'+
+                                '<th>Cars</th>'+
+                                '</tr>'+
+                                '</thead>'+
+
+                                '<tbody id="'+snapshot.key+'carsTable"'+
+                                '</tbody>'+
+                            '</table>'+
+                            '</p>'+
+                            
+                            
                         '</div>'+
                         '<div class="card-action">'+
-                            '<a id="'+snapshot.key+'CarpoolDelete" class="btn-flat">Delete</a>'+                         
-                        '</div>'+
-                       '</div>'+
+                            '<a id="'+snapshot.key+'CarpoolDelete" class="btn-flat">Delete Service</a>'+
+                            '<a href="#'+snapshot.key+'CarpoolAdd" class="modal-trigger waves-effect waves-blue btn-flat">Add car</a>'+
+                            '<div id="'+snapshot.key+'CarpoolAdd" class="modal">'+
+                            '<div class="modal-content">'+
+                            '<h4>Add Car</h4>'+
+                            '<div class="row">'+
+                            '<form class="col s12">'+
+                                '<div class="row">'+
+                                '<div class="input-field col s12">'+
+                                    '<select id="AddCarCarPoolDropDown">'+
+                                    '<option value="" disabled selected>Choose your option</option>'+
+                                    '</select>'+
+                                    '<label>Select Car</label>'+
+                                '</div>'+
+                                '</div>'+
+                                '</div>'+
+                                '</form>'+
+                                '</div>'+
+                                
+                                '<div class="modal-footer">'+
+                                    '<button class="modal-action modal-close waves-effect waves-green btn-flat" id="'+snapshot.key+'CarpoolAddBtn" type="submit">Confirm Booking</button>'+
+                                '</div>'+
+                             
+                            '</div>'+      
+                            '</div>'+
+                            '</div>'+
                         '</div>'+
             '</div>'
   );
+  
+$('#'+snapshot.key+'CarpoolAdd').modal();
+
 $("#"+snapshot.key+"CarpoolDelete").click(function(){
       try{
-        firebase.database().ref('Carpool/'+snapshot.key).remove();
+        car.forEach(function(carId){ 
+        var updates = {};
+        updates['CarpoolService/'+snapshot.key]=null;
+        updates['Car/'+carId+'/isAvailable']=true;
+
+        firebase.database().ref().update(updates);
         $("#"+snapshot.key).remove();
+        getAll();
+        Materialize.toast("Service deleted", 4000);
+        });
         }
         catch(e){
         Materialize.toast("Error !", 4000);
         Materialize.toast(e, 4000);
         }
   });
-  
-  });    
+  $("#"+snapshot.key+"CarpoolAddBtn").click(function(){
+      try{
+        var updates = {};
+        var newIndex;
+        car.forEach(function(carId,index){ newIndex=index;});     
+        updates['CarpoolService/'+snapshot.key+'/cars/'+(newIndex+1)]=$('#carAddVal').value;
+        updates['Car/'+snapshot.val().carId+'/isAvailable']=false;
+        getAll();
+        Materialize.toast("Car added to the service", 4000);
+       
+        }
+        catch(e){
+        Materialize.toast("Error !", 4000);
+        Materialize.toast(e, 4000);
+        }
+  });
+  car.forEach(function(carId,index){ 
+        firebase.database().ref('Car/'+carId+'/carName').once('value',function(carName){$("#"+snapshot.key+"carsTable").append(               
+                  '<tr id="'+carId+'carOnService"><td>'+carName.val()+'</td><td class="right"><button class="btn-flat" id="'+carId+'carDeleteOnService"><i class="material-icons">delete</i></button></td></tr>'
+                  ); 
+        $("#"+carId+"carDeleteOnService").click(function(){
+        if(carpoolId.noOfCars!==1){ 
+            try{
+                var updates = {};
+                updates['CarpoolService/'+snapshot.key+'/cars/'+index]=null;
+                updates['Car/'+carId+'/isAvailable']=true;
+                updates['CarpoolService/'+snapshot.key+'/noOfCars']=(carpoolId.noOfCars-1);
+                firebase.database().ref().update(updates);
+                $("#"+carId+"carOnService").remove();
+                getAll();
+                Materialize.toast("Car deleted", 4000);
+               }
+            catch(e){
+                Materialize.toast("Error !", 4000);
+                Materialize.toast(e, 4000);
+                }
+        }
+        else{
+           Materialize.toast("Can't delete the last car", 4000); 
+        }
+  });
+  });
+  });
+      };
+  });
 };
 
-$(document).ready(function(){
+function setRent(carId,fare){
+    var rentId=firebase.database().ref('RentService/').push().key;
+    firebase.database().ref('RentService/'+rentId).set({
+        carId:carId,
+        fare:fare,
+        isAvailable:true
+    });
+    firebase.database().ref('Car/' + carId+'/isAvailable').set(false);
+};
+function getRent(){   
+    $("#getRentService").html("");
+    firebase.database().ref('RentService/').on('child_added',function(snapshot){
+    firebase.database().ref('Car/'+snapshot.val().carId+'/carName').once('value',function(carName){ 
     
+    var rentId=snapshot.val();
+    if(rentId.isAvailable === true && $('#'+snapshot.key).length === 0){
+    $("#getRentService").append(
+            '<div class="row" id="'+snapshot.key+'">'+
+                        '<div class="col s12 m12 l12">'+
+                        '<div class="card blue-grey darken-1">'+
+                        '<div class="card-content white-text">'+
+                          '  <p>Car Name : ' +carName.val()+'<br/>'+
+                            'Fare : '+rentId.fare+'</p>'+
+                        '</div>'+
+                        '<div class="card-action">'+
+                            '<a id="'+snapshot.key+'RentServiceDelete" class="btn-flat">Delete</a>'+                         
+                        '</div>'+
+                       '</div>'+
+                        '</div>'+
+            '</div>'
+    );
+    $("#"+snapshot.key+"RentServiceDelete").click(function(){
+        try{
+        var updates = {};
+        updates['RentService/'+snapshot.key]=null;
+        updates['Car/'+snapshot.val().carId+'/isAvailable']=true;
+        firebase.database().ref().update(updates);
+        Materialize.toast("Service deleted", 4000);
+        $("#"+snapshot.key).remove();
+        getAll();
+        }
+        catch(e){
+        Materialize.toast("Error !", 4000);
+        Materialize.toast(e, 4000);
+        }
+  });}
+  
+    }); 
+});
+};
+
+function getBooking(){   
+    $("#getBooking").html("");
+    firebase.database().ref('Order/').on('child_added',function(snapshot){  
+    var orderId=snapshot.val();
+    if(orderId.isCanceled === false && $('#'+snapshot.key).length === 0){
+    $("#getBooking").append(
+            '<div class="row" id="'+snapshot.key+'">'+
+                        '<div class="col s12 m12 l12">'+
+                        '<div class="card blue-grey darken-1">'+
+                        '<div class="card-content white-text">'+
+                          '<p>Car Name : ' +orderId.car.carName+'<br/>'+
+                            'Car Type : ' +orderId.car.carType+'<br/>'+
+                            'No of seats : ' +orderId.car.noOfSeats+'<br/>'+
+                            'Fare : '+orderId.fare+'</p>'+
+                        '</div>'+
+                        '<div class="card-action">'+
+                            '<a id="'+snapshot.key+'OrderDelete" class="btn-flat">Cancel Order</a>'+                         
+                        '</div>'+
+                       '</div>'+
+                        '</div>'+
+            '</div>'
+    );
+    $("#"+snapshot.key+"OrderDelete").click(function(){
+        try{
+        var updates = {};
+        updates['Order/'+snapshot.key+'/isCanceled']=true;
+        updates[orderId.orderType+'/'+orderId.serviceId+'/isAvailable']=true;
+        firebase.database().ref().update(updates);
+        $("#"+snapshot.key).remove();
+        getAll();
+        Materialize.toast("Service deleted", 4000);
+        }
+        catch(e){
+        Materialize.toast("Error !"+e, 4000);
+        }
+  });}
+ 
+});
+};
+
+function getAll(){
 getCar();
 getCarpoolData();
+getRent();
+getBooking();
+}
+$(document).ready(function(){    
+getAll();
 $("#carForm").submit(function(event){
 event.preventDefault();
 var carName = document.getElementById('carname').value;   
@@ -133,11 +339,19 @@ var startDate=document.getElementById('startDate').value;
 var endDate=document.getElementById('endDate').value;
 var fare=document.getElementById('fareCarPool').value;
 var noOfPassengers = document.getElementById('noOfPassengers').value;
-console.log(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers);
+var cars = $('.carsVal:selected').map(function() {
+  return this.value.slice(0,-1);
+}).get();
+cars.forEach(function(items){console.log(items);});
 try { 
-    if(routeName && routeDistance && startLocation && endLocation && startDate && endDate && fare && noOfPassengers)
+    if(routeName && routeDistance && startLocation && endLocation && startDate && endDate && fare && noOfPassengers && cars)
     {
-    setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers);
+    setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,cars.length);
+    $("#getCarToDelete").html("");
+    $('#carsSelect').html("");
+    $('#carIdSelect').html("");
+    $('select').material_select();
+    getCar();
     }
     else{
     Materialize.toast("Enter all fields", 4000);
@@ -147,16 +361,46 @@ catch(e){
     console.log(e);
 }
 finally{
-    Materialize.toast("Booking successful", 4000);
+    Materialize.toast("Service Added", 4000);
     $('#carpoolForm').trigger("reset");
 }
 });
 
-//Init or Update select
-$('select').material_select();});
+$("#rentServiceForm").submit(function(event){
+    event.preventDefault();
+    var carId = document.getElementById('carIdVal').value;
+    var fare=document.getElementById('fareRental').value;
+    try { 
+        
+    if(carId && fare)
+    {setRent(carId,fare);
+    $("#getCarToDelete").html("");
+    $('#carsSelect').html("");
+    $('#carIdSelect').html("");
+    $('select').material_select();
+    getCar();
+    }
+    else
+        Materialize.toast("Enter all fields", 4000);
+    }
+    catch(e){
+    console.log(e);
+    }
+    finally{
+    $('#rentServiceForm').trigger("reset");
+    Materialize.toast("Service Added", 4000);
+    }
+  
+});
 
- $('.datepicker').pickadate({
+
+
+    //Init or Update select
+    $('select').material_select();
+
+    $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year
-  });
+    });
 
+});

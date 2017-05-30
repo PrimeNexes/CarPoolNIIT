@@ -98,8 +98,8 @@ and open the template in the editor.
                             <form class="col s12" id="rentServiceForm">
                                 <div class="row">
                                 <div class="input-field col s12">
-                                    <select required>
-                                    <option id="orderIdVal" value="" disabled selected>Choose your option</option>
+                                    <select id="carIdSelect" required>
+                                    <option value="" disabled selected>Choose your option</option>
                                     </select>
                                     <label>Select Car</label>
                                 </div>
@@ -152,15 +152,20 @@ and open the template in the editor.
                                 <label for="endDate">End date</label>
                             </div>
                             <div class="input-field col s6">
-                                <i class="material-icons prefix">payment</i>
                                 <input id="fareCarPool" type="number" class="validate" required>
                                 <label for="fareCarPool">Fare</label>
                             </div>
                             <div class="input-field col s6">
-                                <i class="material-icons prefix">supervisor_account</i>
+                                
                                 <input id="noOfPassengers" type="number" class="validate" required>
                                 <label for="noOfPassengers">No of passengers</label>
                             </div>
+                                <div class="input-field col s12">
+                                    <select id="carsSelect" required multiple>
+                                    <option value="" disabled selected>Choose your option</option>
+                                    </select>
+                                    <label>Select Cars to add</label>
+                                </div>
                             <button class="btn waves-effect waves-light blue darken-3 right" type="submit" name="carpoolsubmit">
                                 Add Service
                             </button>
@@ -173,7 +178,10 @@ and open the template in the editor.
                 </div>
                 
                 <div id="Booking" class="col s12">
-                    
+                    <div class="card-panel">
+                        <div class="row"><div class="col s12"><h5>Booking Details</h5></div></div>
+                        <div id="getBooking"></div>
+                    </div>
                 </div>
                 
                 
