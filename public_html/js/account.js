@@ -1,8 +1,6 @@
 function userState(){
 firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {     
-      Materialize.toast("Logged in", 4000);
-      currentuser=user;
+  if (user) {    
   } else {
       window.location.href ="./index.html";
     // No user is signed in.
@@ -20,8 +18,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 function getFullname(){   
 firebase.auth().onAuthStateChanged(function(user) {   
-    firebase.database().ref('/Users/' + user.uid).once('value').then(function(snapshot) {
-    $("#profileName").html(snapshot.val().fullname);
+    firebase.database().ref('Users/' + user.uid +'/fullname').once('value').then(function(snapshot) {
+        
+    $("#profileName").html(snapshot.val());
     // ...
     });
 });
@@ -31,8 +30,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 function getAddress(){   
 firebase.auth().onAuthStateChanged(function(user) {   
     
-    firebase.database().ref('/Users/' + user.uid).once('value').then(function(snapshot) {
-    $("#profileAddress").html(snapshot.val().address);
+    firebase.database().ref('Users/' + user.uid+'/address').once('value').then(function(snapshot) {
+    $("#profileAddress").html(snapshot.val());
     // ...
     });
 });
@@ -45,7 +44,7 @@ function setAddress(){
         
     var profileaddress = document.getElementById('profileAddress').value;
     try{
-        firebase.database().ref('/Users/' + user.uid).child('address').set(profileaddress);
+        firebase.database().ref('Users/' + user.uid).child('address').set(profileaddress);
     }
     catch(e){
         console.log(e);
@@ -58,7 +57,8 @@ function setAddress(){
 
 }
 $(document).ready(function(){
-
+    
+userState();
 
 getFullname();
 getEmail();
@@ -73,6 +73,7 @@ $("#profileDeleteAgree").click(function(){
 
     user.delete().then(function() {
     Materialize.toast("Profile Deleted", 4000);
+    window.location.href ="./index.html";
     }, function(error) {
     Materialize.toast(error.message, 4000);
     });

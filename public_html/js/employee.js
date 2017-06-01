@@ -1,3 +1,18 @@
+function userState(){
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+      if(user.email==="admin@tyw.org")
+      {}
+      else{
+      window.location.href ="./home.html";
+     }
+    // User is signed in.
+  } else {
+      window.location.href ="./home.html";
+    // No user is signed in.
+  }
+});
+};
 function setCar(carName, carType, noOfSeats) {
   var carId=firebase.database().ref('Car/').push().key;
   firebase.database().ref('Car/' + carId).set({
@@ -7,8 +22,8 @@ function setCar(carName, carType, noOfSeats) {
     isAvailable:true
   });
 }
-function getCar(){
-    $("#getCarToDelete").html("");   
+function getCar(refresh){
+ $("#getCarToDelete").html("");   
  firebase.database().ref('Car/').on('child_added',function(snapshot){
   var carId=snapshot.val();
   if(carId.isAvailable === true && $('#'+snapshot.key).length === 0){
@@ -42,15 +57,14 @@ function getCar(){
   });
 
   
-  
-  
-  
-  $("#carIdSelect").append('<option id="carIdVal" value="'+snapshot.key+'">'+carId.carName+'</option>');
+  if(refresh===false){
+  $("#carIdSelect").append('<option id="carIdVal" value="'+snapshot.key+'">'+carId.carName+' : '+snapshot.key+'</option>');
   $('select').material_select();
-  $("#carsSelect").append('<option class="carsVal" value="'+snapshot.key+'C">'+carId.carName+'</option>');
-  $('select').material_select();
-  $("#AddCarCarPoolDropDown").append('<option class="carAddVal" value="'+snapshot.key+'C">'+carId.carName+'</option>');
-  $('select').material_select();
+  $("#carsSelect").append('<option class="carsVal" value="'+snapshot.key+'">'+carId.carName+' : '+snapshot.key+'</option>');
+  $('select').material_select();}
+  else{
+  $("#AddCarCarPoolDropDown").append('<option id="carAddVal" value="'+snapshot.key+'">'+carId.carName+' : '+snapshot.key+'</option>');
+  $('select').material_select();}
   
   }
   });    
@@ -139,8 +153,15 @@ function getCarpoolData(){
                         '</div>'+
             '</div>'
   );
-  
-$('#'+snapshot.key+'CarpoolAdd').modal();
+
+var onlyonce=true;
+$('#'+snapshot.key+'CarpoolAdd').modal({
+        ready: function() { // Callback for Modal open. Modal and trigger parameters available.
+          if(onlyonce===true){  
+        getCar(true);}
+        onlyonce=false;
+      }
+      });
 
 $("#"+snapshot.key+"CarpoolDelete").click(function(){
       try{
@@ -151,7 +172,7 @@ $("#"+snapshot.key+"CarpoolDelete").click(function(){
 
         firebase.database().ref().update(updates);
         $("#"+snapshot.key).remove();
-        getAll();
+        getCar(false);
         Materialize.toast("Service deleted", 4000);
         });
         }
@@ -160,20 +181,21 @@ $("#"+snapshot.key+"CarpoolDelete").click(function(){
         Materialize.toast(e, 4000);
         }
   });
-  $("#"+snapshot.key+"CarpoolAddBtn").click(function(){
+$("#"+snapshot.key+"CarpoolAddBtn").click(function(){
       try{
         var updates = {};
         var newIndex;
-        car.forEach(function(carId,index){ newIndex=index;});     
-        updates['CarpoolService/'+snapshot.key+'/cars/'+(newIndex+1)]=$('#carAddVal').value;
+        car.forEach(function(carId,index){ newIndex=index+1;});      
+        updates['CarpoolService/'+snapshot.key+'/cars/'+newIndex]=document.getElementById('carAddVal').value;
         updates['Car/'+snapshot.val().carId+'/isAvailable']=false;
-        getAll();
+        firebase.database().ref().update(updates);
+        $('#'+snapshot.key+'CarpoolAdd').modal('close');
         Materialize.toast("Car added to the service", 4000);
-       
+         getAll();
         }
         catch(e){
         Materialize.toast("Error !", 4000);
-        Materialize.toast(e, 4000);
+        console.log(e);
         }
   });
   car.forEach(function(carId,index){ 
@@ -262,7 +284,7 @@ function getBooking(){
     $("#getBooking").html("");
     firebase.database().ref('Order/').on('child_added',function(snapshot){  
     var orderId=snapshot.val();
-    if(orderId.isCanceled === false && $('#'+snapshot.key).length === 0){
+    if(orderId.isCanceled === true && $('#'+snapshot.key).length === 0){
     $("#getBooking").append(
             '<div class="row" id="'+snapshot.key+'">'+
                         '<div class="col s12 m12 l12">'+
@@ -270,8 +292,9 @@ function getBooking(){
                         '<div class="card-content white-text">'+
                           '<p>Car Name : ' +orderId.car.carName+'<br/>'+
                             'Car Type : ' +orderId.car.carType+'<br/>'+
-                            'No of seats : ' +orderId.car.noOfSeats+'<br/>'+
+                            'Status : ' +orderId.status+'<br/>'+
                             'Fare : '+orderId.fare+'</p>'+
+                            'Date of booking : '+orderId.date+'</p>'+
                         '</div>'+
                         '<div class="card-action">'+
                             '<a id="'+snapshot.key+'OrderDelete" class="btn-flat">Cancel Order</a>'+                         
@@ -298,13 +321,57 @@ function getBooking(){
 });
 };
 
+function getCompletedOrders(){   
+    $("#getCompleted").html("");
+    firebase.database().ref('Order/').on('child_added',function(snapshot){  
+    var orderId=snapshot.val();
+    if(orderId.isCanceled === false && $('#'+snapshot.key).length === 0){
+    $("#getCompleted").append(
+            '<div class="row" id="'+snapshot.key+'">'+
+                        '<div class="col s12 m12 l12">'+
+                        '<div class="card blue-grey darken-1">'+
+                        '<div class="card-content white-text">'+
+                        '<h6>Order Id : ' +snapshot.key+'</h6><br/>'+
+                          '<p>Car Name : ' +orderId.car.carName+'<br/>'+
+                            'Car Type : ' +orderId.car.carType+'<br/><br/>'+
+                            'Status : ' +orderId.status+'<br/>'+
+                            'Fare : '+orderId.fare+'</p>'+
+                            'Date of booking : '+orderId.date+'</p>'+
+                        '</div>'+
+                        '<div class="card-action">'+
+                            '<a id="'+snapshot.key+'OrderCompleted" class="btn-flat">Complete Order</a>'+                         
+                        '</div>'+
+                       '</div>'+
+                        '</div>'+
+            '</div>'
+    );
+    $("#"+snapshot.key+"OrderCompleted").click(function(){
+        try{
+        var updates = {};
+        updates['Order/'+snapshot.key+'/status']="Completed";
+        updates[orderId.orderType+'/'+orderId.serviceId+'/isAvailable']=true;
+        firebase.database().ref().update(updates);
+        $("#"+snapshot.key).remove();
+        getAll();
+        Materialize.toast("Service deleted", 4000);
+        }
+        catch(e){
+        Materialize.toast("Error !"+e, 4000);
+        }
+  });}
+ 
+});
+};
+
 function getAll(){
-getCar();
+getCar(false);
 getCarpoolData();
 getRent();
 getBooking();
+getCompletedOrders();
 }
-$(document).ready(function(){    
+$(document).ready(function(){ 
+userState();
 getAll();
 $("#carForm").submit(function(event){
 event.preventDefault();
@@ -340,7 +407,7 @@ var endDate=document.getElementById('endDate').value;
 var fare=document.getElementById('fareCarPool').value;
 var noOfPassengers = document.getElementById('noOfPassengers').value;
 var cars = $('.carsVal:selected').map(function() {
-  return this.value.slice(0,-1);
+  return this.value;
 }).get();
 cars.forEach(function(items){console.log(items);});
 try { 
@@ -351,7 +418,7 @@ try {
     $('#carsSelect').html("");
     $('#carIdSelect').html("");
     $('select').material_select();
-    getCar();
+    getCar(false);
     }
     else{
     Materialize.toast("Enter all fields", 4000);
@@ -378,7 +445,7 @@ $("#rentServiceForm").submit(function(event){
     $('#carsSelect').html("");
     $('#carIdSelect').html("");
     $('select').material_select();
-    getCar();
+    getCar(false);
     }
     else
         Materialize.toast("Enter all fields", 4000);
@@ -392,9 +459,6 @@ $("#rentServiceForm").submit(function(event){
     }
   
 });
-
-
-
     //Init or Update select
     $('select').material_select();
 
@@ -402,5 +466,7 @@ $("#rentServiceForm").submit(function(event){
     selectMonths: true, // Creates a dropdown to control month
     selectYears: 15 // Creates a dropdown of 15 years to control year
     });
+
+
 
 });
