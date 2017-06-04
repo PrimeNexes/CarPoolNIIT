@@ -1,10 +1,10 @@
-function getRentCar(){
+function getRentCar(type){
 $("#rentWindow").html("");
 firebase.database().ref('RentService/').on('child_added',function(getRent){
 firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot){
   var carId=snapshot.val();
-  if(getRent.val().isAvailable === true && $('#'+snapshot.key+'RentCard').length === 0){
-  $("#rentWindow").append(
+  function getRentCard(){
+        $("#rentWindow").append(
             '<div class="row" id="'+snapshot.key+'RentCard">'+
                         '<div class="col s12 m12 l12">'+
                         '<div class="card blue-grey darken-1">'+
@@ -28,9 +28,8 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
                         '</div>'+
                         '</div>'+
                         '</div>'+
-            '</div>');    
-    
-    $('#'+snapshot.key+'Book').modal();
+            '</div>'); 
+        $('#'+snapshot.key+'Book').modal();
     
     $('#'+snapshot.key+'BookConfirm').click(function(){
         if(getRent.val().isAvailable === true){
@@ -51,7 +50,20 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
         Materialize.toast("Success.Check your order in 'My Order'.", 4000);
         }};
      });
+    }
+    if(type){
+    if(getRent.val().isAvailable === true && $('#'+snapshot.key+'RentCard').length === 0 && carId.carType===type){  
+      
+    getRentCard();    
     
+    };
+    }
+    else{
+    if(getRent.val().isAvailable === true && $('#'+snapshot.key+'RentCard').length === 0){  
+      
+    getRentCard();    
+    
+    } 
     }
     });
     });
@@ -163,62 +175,6 @@ function setCOrder(serviceId,fare,orderType){
         }
     });
 }
-function searchRentCar(type){
-  $("#rentWindow").html('');
-  firebase.database().ref('Rent/Car/').on('child_added',function(snapshot){
-  var carId=snapshot.val();
-  if(carId.carType === type && carId.isAvailable === true){
-  $("#rentWindow").append(
-            '<div class="row" id="'+snapshot.key+'RentCard">'+
-                        '<div class="col s12 m12 l12">'+
-                        '<div class="card blue-grey darken-1">'+
-                        '<div class="card-content white-text">'+
-                            '<span class="card-title">'+carId.carName+'</span>'+
-                            '<p>Car Type : '+carId.carType+'<br/>'+
-                            'No of Seats : '+carId.noOfSeats+'<br/>'+
-                            'Fare : '+getRent.val().fare+'</p>'+
-                        '</div>'+
-                        '<div class="card-action">'+
-                        '<a href="#'+snapshot.key+'Book" class="modal-trigger waves-effect waves-blue btn-flat">Book</a>'+
-                        '<div id="'+snapshot.key+'Book" class="modal modal-fixed-footer">'+
-                            '<div class="modal-content">'+
-                            '<h4>Book car</h4>'+
-                            '<p>A bunch of text</p>'+
-                            '</div>'+
-                            '<div class="modal-footer">'+
-                            '<a id="'+snapshot.key+'BookConfirm" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>'+
-                            '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-                        '</div>'+
-            '</div>');    
-    
-    $('#'+snapshot.key+'Book').modal();
-    
-    $('#'+snapshot.key+'BookConfirm').click(function(){
-        if(getRent.val().isAvailable === true){
-        try{
-            
-            setROrder(getRent.key,snapshot.key,carId.carName,carId.carType,carId.noOfSeats,getRent.val().fare,"RentService");
-            firebase.database().ref('RentService/' + getRent.key+'/isAvailable').set(false);
-            
-        }
-        catch(e)
-        {
-         console.log(e);
-         Materialize.toast("Error.Try again or refresh the page", 4000);
-        }
-        finally{
-        $('#'+snapshot.key+'Book').modal('close');
-        $("#"+snapshot.key+"RentCard").remove();       
-        Materialize.toast("Success.Check your order in 'My Order'.", 4000);
-        }};
-     });
-    
-    }
-        });      
-};
 
 $(document).ready(function(){
 //Check current user on ready
@@ -228,25 +184,25 @@ getRentCar();
 getCarpool();
 //Search Car
 $("#carH").click(function(){
-        searchRentCar('Hatchback');
+        getRentCar('Hatchback');
 });
 $("#carS").click(function(){
-        searchRentCar('Sedan');
+       getRentCar('Sedan');
 });
 $("#carMPV").click(function(){
-        searchRentCar('MPV');
+       getRentCar('MPV');
 });
 $("#carSUV").click(function(){
-        searchRentCar('SUV');
+        getRentCar('SUV');
 });
 $("#carCross").click(function(){
-        searchRentCar('Crossover');
+        getRentCar('Crossover');
 });
 $("#carCoupe").click(function(){
-        searchRentCar('Coupe');
+        getRentCar('Coupe');
 });
 $("#carConvert").click(function(){
-        searchRentCar('Convertible');
+        getRentCar('Convertible');
 });
 $("#carAll").click(function(){
         $("#rentWindow").html('');

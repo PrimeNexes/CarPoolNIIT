@@ -4,7 +4,7 @@ firebase.database().ref('Order').on('child_added',function(snapshot) {
     if($('#'+snapshot.key).length === 0){
     $('#getOrder').append(
                 '<div class="row" id="'+snapshot.key+'">'+
-                '<div class="col s12 m5">'+
+                '<div class="col s12 m12">'+
                 '<div class="card blue-grey darken-1">'+
                 '<div class="card-content white-text">'+
                 '<p>'+
@@ -15,13 +15,13 @@ firebase.database().ref('Order').on('child_added',function(snapshot) {
                 '</div>'+
                 '<div class="card-action">'+
                 '<a id="'+snapshot.key+'DownloadBtn" class="modal-trigger waves-effect waves-blue btn-flat" download>Download Invoice</a>'+
-                '<a href="#'+snapshot.key+'Order" id="'+snapshot.key+'OrderCancelBtn" class="modal-trigger waves-effect waves-blue btn-flat">Cancel Order</a>'+
+                '<a href="#'+snapshot.key+'OrderCancel" id="'+snapshot.key+'OrderCancelBtn" class="modal-trigger waves-effect waves-blue btn-flat">Cancel Order</a>'+
                             '<div id="'+snapshot.key+'OrderCancel" class="modal">'+
                             '<div class="modal-content">'+
                             '<h4>Cancel Order</h4>'+
                             '<p>Are you sure ? This action cannot be undone</p>'+                                  
                                 '<div class="modal-footer">'+
-                                    '<button class="modal-action modal-close waves-effect waves-green btn" id="'+snapshot.key+'OrderCancel" type="submit">Cancel Order</button>'+
+                                    '<button class="modal-action modal-close waves-effect waves-green btn" id="'+snapshot.key+'OrderCancelSubmit">Cancel Order</button>'+
                                 '</div>'+              
                             '</div>'+   
                 '</div>'+
@@ -29,12 +29,12 @@ firebase.database().ref('Order').on('child_added',function(snapshot) {
                 '</div>'+
             '</div>'           
             );
-        if(snapshot.val().status === "Cancelation requested" || snapshot.val().status === "Cancelled"){
+        if(snapshot.val().status === "Cancelation requested" || snapshot.val().status === "Canceled"){
             $('#'+snapshot.key+'OrderCancelBtn').remove(); 
         }    
         $('#'+snapshot.key+'OrderCancel').modal({
         ready: function() { // Callback for Modal open. Modal and trigger parameters available.
-            $('#'+snapshot.key+'OrderCancel').click(function(){
+            $('#'+snapshot.key+'OrderCancelSubmit').click(function(){
                 var updates={};
                 updates['Order/'+snapshot.key+'/isCanceled']=true;
                 updates['Order/'+snapshot.key+'/status']="Cancelation requested";
