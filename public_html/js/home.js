@@ -3,11 +3,20 @@ $("#rentWindow").html("");
 firebase.database().ref('RentService/').on('child_added',function(getRent){
 firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot){
   var carId=snapshot.val();
+
   function getRentCard(){
+      console.log(getRent.val().carId);
+        firebase.storage().ref('Car/'+getRent.val().carId).getDownloadURL().then(function(url) {
         $("#rentWindow").append(
             '<div class="row" id="'+snapshot.key+'RentCard">'+
                         '<div class="col s12 m12 l12">'+
-                        '<div class="card blue-grey darken-1">'+
+                        '<div class="card horizontal blue-grey darken-1 small">'+
+                        '<div class="card-image">'+
+                                '<img src="'+url+'">'+
+                                '<span class="card-title">'+carId.carName+'</span>'+
+                        '</div>'+
+                        '<div class="card-stacked">'+
+                        
                         '<div class="card-content white-text">'+
                             '<span class="card-title">'+carId.carName+'</span>'+
                             '<p>Car Type : '+carId.carType+'<br/>'+
@@ -15,7 +24,7 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
                             'Fare : '+getRent.val().fare+'</p>'+
                         '</div>'+
                         '<div class="card-action">'+
-                        '<a href="#'+snapshot.key+'Book" class="modal-trigger waves-effect waves-blue btn-flat">Book</a>'+
+                        '<a href="#'+snapshot.key+'Book" class="modal-trigger waves-effect waves-blue btn-flat ">Book</a>'+
                         '<div id="'+snapshot.key+'Book" class="modal modal-fixed-footer">'+
                             '<div class="modal-content">'+
                             '<h4>Book car</h4>'+
@@ -28,7 +37,9 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
                         '</div>'+
                         '</div>'+
                         '</div>'+
+                        '</div>'+
             '</div>'); 
+         
         $('#'+snapshot.key+'Book').modal();
     
     $('#'+snapshot.key+'BookConfirm').click(function(){
@@ -50,7 +61,10 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
         Materialize.toast("Success.Check your order in 'My Order'.", 4000);
         }};
      });
-    }
+     }); 
+    };
+    
+    
     if(type){
     if(getRent.val().isAvailable === true && $('#'+snapshot.key+'RentCard').length === 0 && carId.carType===type){  
       
@@ -69,16 +83,30 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
     });
 };
 
-function getCarpool(){
+function getCarpoolService(type){
 $("#poolWindow").html("");
 firebase.database().ref('CarpoolService/').on('child_added',function(getCarpool){
-  if(getCarpool.val().isAvailable === true && $('#'+getCarpool.key+'RentCard').length === 0 ){
+    
+if($('#'+getCarpool.val().startLocation).length===0){       
+$('#CarpoolTypeDropDown').append('<li><a id="'+getCarpool.val().startLocation+'">'+getCarpool.val().startLocation+'</a></li>');
+$('#'+getCarpool.val().startLocation).click(function(){
+    $("#poolWindow").html("");
+    getCarpoolService(getCarpool.val().startLocation);});
+}
+function getCarpoolCard(){
+            firebase.storage().ref('Location/'+getCarpool.key).getDownloadURL().then(function(url) {
   $("#poolWindow").append(
             '<div class="row" id="'+getCarpool.key+'CarpoolCard">'+
                         '<div class="col s12 m12 l12">'+
-                        '<div class="card blue-grey darken-1">'+
+                        '<div class="card large blue-grey darken-1">'+
+                                                '<div class="card-image">'+
+                                '<img src="'+url+'">'+
+                                '<span class="card-title">'+getCarpool.val().routeName+'</span>'+
+                        '</div>'+
+                        '<div class="card-stacked">'+
                         '<div class="card-content white-text">'+
-                            '<span class="card-title">'+getCarpool.val().routeName+'</span>'+
+                            'From : '+getCarpool.val().startLocation+'<br/>'+
+                            'Destination : '+getCarpool.val().endLocation+'<br/>'+
                             'No of Seats per car : '+getCarpool.val().noOfPassengers+'<br/>'+
                             'Fare : '+getCarpool.val().fare+'</p>'+
                         '</div>'+
@@ -92,6 +120,7 @@ firebase.database().ref('CarpoolService/').on('child_added',function(getCarpool)
                             '<div class="modal-footer">'+
                             '<a id="'+getCarpool.key+'BookConfirmC" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>'+
                             '</div>'+
+                        '</div>'+
                         '</div>'+
                         '</div>'+
                         '</div>'+
@@ -116,8 +145,17 @@ firebase.database().ref('CarpoolService/').on('child_added',function(getCarpool)
         Materialize.toast("Success.Check your order in 'My Order'.", 4000);
         }};
      });
-    
+    }); 
+    };
+    if(type){
+    if(getCarpool.val().isAvailable === true && $('#'+getCarpool.key+'RentCard').length === 0 && getCarpool.val().startLocation===type){
+    getCarpoolCard();
     }
+    }
+    else{
+    if(getCarpool.val().isAvailable === true && $('#'+getCarpool.key+'RentCard').length === 0 ){
+    getCarpoolCard();
+    }}
     });
 };
 
@@ -181,7 +219,7 @@ $(document).ready(function(){
 userState();  
 //Get all Car      
 getRentCar();
-getCarpool();
+getCarpoolService();
 //Search Car
 $("#carH").click(function(){
         getRentCar('Hatchback');

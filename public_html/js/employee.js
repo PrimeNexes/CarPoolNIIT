@@ -13,13 +13,16 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 };
-function setCar(carName, carType, noOfSeats) {
+function setCar(carName, carType, noOfSeats,file) {
   var carId=firebase.database().ref('Car/').push().key;
   firebase.database().ref('Car/' + carId).set({
     carName: carName,
     carType: carType,
     noOfSeats: noOfSeats,
     isAvailable:true
+  });
+  firebase.storage().ref('Car/'+carId).put(file).then(function(){
+                    Materialize.toast("File Uploaded", 4000);
   });
 }
 function getCar(refresh){
@@ -70,7 +73,7 @@ function getCar(refresh){
   });    
 };
 
-function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,noOfCars){
+function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,noOfCars,file){
     var carpoolId=firebase.database().ref('CarpoolService/').push().key;
     firebase.database().ref('CarpoolService/'+carpoolId).set({
         routeName:routeName,
@@ -87,6 +90,9 @@ function setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,
     });
     cars.forEach(function(carId){    
       firebase.database().ref('Car/'+carId+'/isAvailable').set(false);     
+  });
+  firebase.storage().ref('Location/'+carpoolId).put(file).then(function(){
+                    Materialize.toast("File Uploaded", 4000);
   });
 };
 function getCarpoolData(){
@@ -172,7 +178,7 @@ $("#"+snapshot.key+"CarpoolDelete").click(function(){
 
         firebase.database().ref().update(updates);
         $("#"+snapshot.key).remove();
-        getCar(false);
+        window.location.href ="./employee.html#Carpool";
         Materialize.toast("Service deleted", 4000);
         });
         }
@@ -377,10 +383,12 @@ event.preventDefault();
 var carName = document.getElementById('carname').value;   
 var carType = document.getElementById('carType').value;
 var noOfSeats = document.getElementById('noOfSeats').value;
+var file=document.getElementById("carImg").files[0];
+console.log(file);
 try { 
-    if(carName && carType&& noOfSeats)
+    if(carName && carType && noOfSeats && file)
     {
-        setCar(carName, carType, noOfSeats);
+        setCar(carName, carType, noOfSeats,file);
         Materialize.toast("Car Added", 4000);
         $('#carForm').trigger("reset");
         window.location.href ="./employee.html#Car";
@@ -406,14 +414,15 @@ var startDate=document.getElementById('startDate').value;
 var endDate=document.getElementById('endDate').value;
 var fare=document.getElementById('fareCarPool').value;
 var noOfPassengers = document.getElementById('noOfPassengers').value;
+var file=document.getElementById("LocationImg").files[0];
 var cars = $('.carIdCarPool:selected').map(function() {
   return this.value;
 }).get();
 cars.forEach(function(items){console.log(items);});
 try { 
-    if(routeName && routeDistance && startLocation && endLocation && startDate && endDate && fare && noOfPassengers && cars)
+    if(routeName && routeDistance && startLocation && endLocation && startDate && endDate && fare && noOfPassengers && cars && file)
     {
-    setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,cars.length);
+    setCarpool(routeName,routeDistance,startLocation,endLocation,startDate,endDate,fare,noOfPassengers,cars,cars.length,file);
     window.location.href ="./employee.html#Carpool";
     $('#carpoolForm').trigger("reset");
     Materialize.toast("Service Added", 4000);
