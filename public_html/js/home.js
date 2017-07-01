@@ -28,7 +28,12 @@ firebase.database().ref('Car/'+getRent.val().carId).on('value',function(snapshot
                         '<div id="'+snapshot.key+'Book" class="modal modal-fixed-footer">'+
                             '<div class="modal-content">'+
                             '<h4>Book car</h4>'+
-                            '<p>A bunch of text</p>'+
+                            '<p>'+
+                            '<b>Cancellation Policy</b></br>'+
+                            '1.Cancellation made more than 24hrs before booking start: ? 200 </br>'+
+                            '2.Cancellation made within 24hrs of booking start: ? 200 or 50 % of Booking Fee (whichever is greater) </br>'+
+                            '3.Cancellation made after booking start: No Refund </br>'+
+                            '4.Cancellation refund will be done through the original payment method within 7- 10 working days </p>'+
                             '</div>'+
                             '<div class="modal-footer">'+
                             '<a id="'+snapshot.key+'BookConfirm" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>'+
@@ -115,7 +120,12 @@ function getCarpoolCard(){
                         '<div id="'+getCarpool.key+'BookC" class="modal modal-fixed-footer">'+
                             '<div class="modal-content">'+
                             '<h4>Book car</h4>'+
-                            '<p>A bunch of text</p>'+
+                            '<p>'+
+                            '<b>Cancellation Policy</b></br>'+
+                            '1.Cancellation made more than 24hrs before booking start: ? 200 </br>'+
+                            '2.Cancellation made within 24hrs of booking start: ? 200 or 50 % of Booking Fee (whichever is greater) </br>'+
+                            '3.Cancellation made after booking start: No Refund </br>'+
+                            '4.Cancellation refund will be done through the original payment method within 7- 10 working days </p>'+
                             '</div>'+
                             '<div class="modal-footer">'+
                             '<a id="'+getCarpool.key+'BookConfirmC" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>'+
